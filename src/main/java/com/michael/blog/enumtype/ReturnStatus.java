@@ -9,7 +9,8 @@ public enum ReturnStatus {
     IS_EXIST(1, "账户已存在"),
     NOT_EXIST(2, "用户不存在"),
     AUTH_ERROR(3, "用户名或密码错误"),
-    AUTH_LIMIT(4, "权限不足"),;
+    AUTH_LIMIT(4, "权限不足"),
+    BLOG_NOT_EXIST(5, "博客不存在"),;
 
     ReturnStatus(int code, String desc) {
         this.code = code;

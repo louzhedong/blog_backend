@@ -7,6 +7,7 @@ import com.michael.blog.enumtype.ReturnStatus;
 import com.michael.blog.repository.AuthRepository;
 import com.michael.blog.repository.UserRepository;
 import com.michael.blog.utils.TokenProcessor;
+import com.michael.blog.vo.AuthVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +53,10 @@ public class LoginService {
             } else {
                 authRepository.updateOne(userId, token, new Date());
             }
-            resultMsg.setData(token);
+            AuthVo authVo = new AuthVo();
+            authVo.setUid(userId);
+            authVo.setToken(token);
+            resultMsg.setData(authVo);
             resultMsg.setResultCode(ReturnStatus.OK.getCode());
             resultMsg.setResultMsg(ReturnStatus.OK.getDesc());
         } else {

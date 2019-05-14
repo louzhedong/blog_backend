@@ -31,12 +31,13 @@ public class AuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         start = System.currentTimeMillis();
         String token = request.getParameter("token");
+        String uid = request.getParameter("uid");
         if (StringUtils.isEmpty(token)) {
             this.getTokenFailReturnResult(response);
             return false;
         }
         Auth auth = authRepository.getByToken(token);
-        if (null == auth) {
+        if ((null == auth) || !auth.getId().toString().equals(uid)) {
             this.getTokenFailReturnResult(response);
             return false;
         }
