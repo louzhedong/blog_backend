@@ -6,6 +6,7 @@ import com.michael.blog.enumtype.ReturnStatus;
 import com.michael.blog.repository.BlogRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,19 @@ import java.util.List;
 @Service
 public class BlogService {
 
+
     @Autowired
     BlogRepository blogRepository;
 
-    public List<Blog> getBlogList(Long uid, int pageNo, int pageSize) {
+    public List<Blog> getAllBlogList(Long pageNo, Long pageSize) {
+        PageRequest pageRequest = new PageRequest(pageNo.intValue(), pageSize.intValue(), Sort.Direction.DESC, "gmt_create");
+        Page<Blog> blogList = blogRepository.findAll(pageRequest);
+        return (List<Blog>) blogList;
+    }
 
-        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, "gmt_create");
+    public List<Blog> getBlogListByUid(Long uid, Long pageNo, Long pageSize) {
+
+        PageRequest pageRequest = new PageRequest(pageNo.intValue(), pageSize.intValue(), Sort.Direction.DESC, "gmt_create");
         List<Blog> blogList = blogRepository.findAllByUserId(uid, pageRequest);
         return blogList;
     }
@@ -54,9 +62,7 @@ public class BlogService {
         return resultMsg;
     }
 
-
     // 删除blog
-
     public ResultMsg delBlog(Long blogId) {
         ResultMsg resultMsg = new ResultMsg();
 
@@ -66,7 +72,7 @@ public class BlogService {
             return resultMsg;
         }
 
-        blogRepository.deleteById(blogId.intValue());
+        blogRepository.delete(blogId.intValue());
         resultMsg.setResultCode(ReturnStatus.OK.getCode());
         resultMsg.setResultMsg(ReturnStatus.OK.getDesc());
 
@@ -75,11 +81,16 @@ public class BlogService {
 
     // 判断blog是否存在
     private boolean checkBlogIsExist(Long blogId) {
-        Blog blog = blogRepository.getOne(blogId.intValue());
-        if (null == blog) {
-            return false;
-        } else {
-            return true;
+        return blogRepository.exists(blogId.intValue());
+    }
+
+    // 浏览文章，给文章增加阅读量
+    public void increaseScanCount(Long blogId) {
+        Blog blog = blogRepository.findOne(blogId.intValue());
+        if (null != blog) {
+            Integer scanCount = blog.getScanCount();
+            scanCount++;
+            blogRepository.updateBlogScanCount(blogId, scanCount);
         }
     }
 }

@@ -26,12 +26,12 @@ public class BlogController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResultMsg<List<Blog>> getBlogList(
             @RequestParam(value = "uid", required = true) Long uid,
-            @RequestParam(value = "pageNo", required = true) Integer pageNo,
-            @RequestParam(value = "pageSize", required = true) Integer pageSize
+            @RequestParam(value = "pageNo", required = true) Long pageNo,
+            @RequestParam(value = "pageSize", required = true) Long pageSize
 
     ) {
         ResultMsg resultMsg = new ResultMsg();
-        List<Blog> blogList = blogService.getBlogList(uid, pageNo, pageSize);
+        List<Blog> blogList = blogService.getBlogListByUid(uid, pageNo, pageSize);
         resultMsg.setData(blogList);
         return resultMsg;
     }

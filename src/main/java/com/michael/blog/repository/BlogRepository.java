@@ -26,4 +26,13 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
             @Param(value = "content") String content,
             @Param(value = "gmtModify") Date gmtModify
     );
+
+
+    // 增加阅读量
+    @Modifying
+    @Query("update Blog set scanCount = ?2 where id = ?1")
+    void updateBlogScanCount(
+            @Param(value = "id") Long id,
+            @Param(value = "scanCount") Integer scanCount
+    );
 }
